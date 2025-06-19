@@ -1,13 +1,13 @@
 namespace ReseauDeBus.Backend;
 
-public class Arret
+public class Arret : Planifiable
 {
     public string id_arret { get; }
     public int x_arret { get; set; }
     public int y_arret { get; set; }
     public List<Creneau> creneaux_arret { get; }
 
-    public Arret(string idArret, int xArret, int yArret, List<Creneau> creneauxArret)
+    public Arret(string idArret, int xArret, int yArret, List<Creneau> creneauxArret) : base(creneauxArret)
     {
         id_arret = idArret;
         x_arret = xArret;

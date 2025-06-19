@@ -12,4 +12,5 @@ public class Creneau
         moyenne_creneau = moyenneCreneau;
         ecartType_creneau = ecartTypeCreneau;
     }
+    
 }
