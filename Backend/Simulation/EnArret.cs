@@ -4,17 +4,19 @@ public class EnArret : IEtatBus
 {
     public TimeSpan tempsDArret { get; set; }
 
-    public EnArret() {}
+    public EnArret(TimeSpan tempsDArret)
+    {
+        this.tempsDArret = tempsDArret;
+    }
 
     public void OnTick(Bus bus, TimeSpan elapsedTime)
     {
         tempsDArret -= elapsedTime;
-        if (tempsDeCirculation <= TimeSpan.Zero)
+        if (tempsDArret <= TimeSpan.Zero)
         {
-            bus.AvanceArret();
-            bus.EtatCourant = new EnArret();
+            bus.EtatCourant = new EnCirculation();
         }
     }
     
-    public override string ToString() => "Bus en circulation";
+    public override string ToString() => "Bus à l'arrêt";
 }
