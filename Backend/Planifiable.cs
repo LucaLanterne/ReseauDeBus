@@ -28,11 +28,20 @@ public abstract class Planifiable
         
     public void AddCreneau(Creneau creneau)
     {
-        horaires.Add(new Creneau(creneau.plage_creneau, creneau.moyenne_creneau, creneau.ecartType_creneau));
+        if (horaires.All(c => 
+                c.plage_creneau != creneau.plage_creneau &&
+                c.moyenne_creneau != creneau.moyenne_creneau &&
+                c.ecartType_creneau != creneau.ecartType_creneau))
+        {
+            horaires.Add(new Creneau(creneau.plage_creneau, creneau.moyenne_creneau, creneau.ecartType_creneau));
+        }
     }
 
-    // public void RemoveCreneau(Creneau creneau)
-    // {
-    //     horaires.Remove();
-    // }
+    public void RemoveCreneau(Creneau creneau)
+    {
+        horaires.RemoveAll(c => 
+            c.plage_creneau == creneau.plage_creneau && 
+            c.moyenne_creneau == creneau.moyenne_creneau &&
+            c.ecartType_creneau == creneau.ecartType_creneau);
+    }
 }
