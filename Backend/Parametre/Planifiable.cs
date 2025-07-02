@@ -1,13 +1,13 @@
-namespace ReseauDeBus.Backend;
+namespace ReseauDeBus.Backend.Parametre;
 
 public abstract class Planifiable
 {
     public List<Creneau> horaires { get; }
 
-    public Planifiable(List<Creneau> creneauxArret)
+    public Planifiable(List<Creneau> creneaux)
     {
         horaires = new List<Creneau>();
-        foreach (Creneau c in creneauxArret)
+        foreach (Creneau c in creneaux)
         {
             horaires.Add(new Creneau(c.plage_creneau, c.moyenne_creneau, c.ecartType_creneau));
         }

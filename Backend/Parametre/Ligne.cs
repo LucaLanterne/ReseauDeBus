@@ -1,9 +1,9 @@
-namespace ReseauDeBus.Backend;
+namespace ReseauDeBus.Backend.Parametre;
 
 public class Ligne
 {
     public string id_ligne { get; }
-    public string nom_ligne { get; set; }
+    public string nom_ligne { get; }
     public List<Arret> arrets_ligne { get; }
     public List<Troncon> troncons_ligne { get; }
 
@@ -22,9 +22,6 @@ public class Ligne
             troncons_ligne.Add(new Troncon(t.id_troncon, t.arretDepart_troncon, t.arretArrivee_troncon, t.creneaux_troncon));
         }
     }
-
-    //Ne faut il pas vérifier que l'arret ou le troncon est bien dans la liste complète du réseau pour faire l'ajout dans une ligne ?
-    //Pour s'assurer de la cohérence du réseau.
     
     public void AddArret(Arret arret)
     {
