@@ -1,4 +1,4 @@
-namespace ReseauDeBus.Backend;
+namespace ReseauDeBus.Backend.Parametre;
 
 public class Reseau
 {
