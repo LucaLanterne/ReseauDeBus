@@ -13,4 +13,10 @@ public class Creneau
         ecartType_creneau = ecartTypeCreneau;
     }
     
+    public TimeSpan GetDuree()
+    {
+        Random random = new Random();
+        int temps = this.moyenne_creneau + random.Next(-this.ecartType_creneau, this.ecartType_creneau+1);
+        return TimeSpan.FromSeconds(temps);
+    }
 }
