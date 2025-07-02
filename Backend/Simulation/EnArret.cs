@@ -4,24 +4,9 @@ namespace ReseauDeBus.Backend.Simulation;
 
 public class EnArret : IEtatBus
 {
-    public TimeSpan tempsArret { get; set; }
-
-    public EnArret(TimeSpan tempsArret)
+    public void OnTick(InfoTrafic infoTrafic)
     {
-        this.tempsArret = tempsArret;
-    }
-
-    public void OnTick(Bus bus, TimeSpan elapsedTime, DateTime heureSimulee)
-    {
-        tempsArret -= elapsedTime;
-        if (tempsArret <= TimeSpan.Zero)
-        {
-            // Voir si on met la ligne pour recherche de troncon et arret en variable de la classe bus,
-            // ou comment on va récupérer l'arret ou le troncon.
-            Planifiable planifiable = new Arret("1", "test", 1, 1, new List<Creneau>());
-            TimeSpan tempsCirculation = bus.GetTempsPlanifiable(planifiable, heureSimulee);
-            bus.EtatCourant = new EnCirculation(tempsCirculation);
-        }
+        infoTrafic.etatBus_infoTrafic = new EnCirculation(infoTrafic.emplacementBus_infoTrafic.getDuree(infoTrafic.simulation_infoTrafic.getTime()));
     }
     
     public override string ToString() => "Bus à l'arrêt";
