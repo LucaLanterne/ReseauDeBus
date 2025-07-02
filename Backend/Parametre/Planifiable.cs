@@ -13,7 +13,7 @@ public abstract class Planifiable
         }
     }
 
-    public List<Creneau> getByPlageCreneau((int, int) plageCreneau)
+    public List<Creneau> GetByPlageCreneau((int, int) plageCreneau)
     {
         List<Creneau> ret = new List<Creneau>();
         foreach (Creneau c in horaires)
@@ -43,5 +43,21 @@ public abstract class Planifiable
             c.plage_creneau == creneau.plage_creneau && 
             c.moyenne_creneau == creneau.moyenne_creneau &&
             c.ecartType_creneau == creneau.ecartType_creneau);
+    }
+    
+    public TimeSpan GetDuree(DateTime date)
+    {
+        var heureDate = date.Hour;
+        TimeSpan temps = TimeSpan.Zero;
+        foreach (Creneau c in horaires)
+        {
+            var heureDeb = c.plage_creneau.Item1;
+            var heureFin = c.plage_creneau.Item1;
+            if (heureDeb <= heureDate && heureFin >= heureDate)
+            {
+                temps = c.GetDuree();
+            }
+        }
+        return temps;
     }
 }
