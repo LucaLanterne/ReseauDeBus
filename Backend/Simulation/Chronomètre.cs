@@ -5,16 +5,16 @@ namespace ReseauDeBus.Backend.Simulation
 {
     public class Chronometre : IObservable<DateTime>
     {
-        private Timer? chrono;
-        private int frequence = 1000; // en ms (1 tick/seconde réelle)
-        private DateTime debut;
-        private TimeSpan dureeChrono = TimeSpan.FromMinutes(1);
-        private TimeSpan tempsRestant;
+        public Timer? chrono {get; private set;}
+        public int frequence {get; private set;}
+        public DateTime debut {get; private set;}
+        public TimeSpan dureeChrono {get; private set;}
+        public TimeSpan tempsRestant {get; private set;}
         public bool IsActif { get; private set; } = false;
 
         private readonly HashSet<IObserver<DateTime>> observateurs = new();
 
-        public void Start(int delaiMs, TimeSpan duree)
+        public void Start(TimeSpan duree, int delaiMs = 1000)
         {
             frequence = delaiMs;
             dureeChrono = duree;
