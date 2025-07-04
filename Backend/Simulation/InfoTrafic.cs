@@ -30,4 +30,7 @@ public class InfoTrafic
         this.etatBus_infoTrafic.OnTick(this);
     }
     
+    // Méthode pour changer de sens
+    
+    // Méthode pour faire avancer le bus
 }

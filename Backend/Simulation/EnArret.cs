@@ -1,6 +1,6 @@
 namespace ReseauDeBus.Backend.Simulation;
 
-public class EnArret : IEtatBus, IObserver<TimeSpan>
+public class EnArret : IEtatBus
 {
     private Chronometre chronometre_etat = new Chronometre();
     public EnArret(InfoTrafic infoTrafic)
@@ -16,19 +16,4 @@ public class EnArret : IEtatBus, IObserver<TimeSpan>
     }
     
     public override string ToString() => "Bus à l'arrêt";
-    
-    public void OnCompleted()
-    {
-        throw new NotImplementedException();
-    }
-
-    public void OnError(Exception error)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void OnNext(TimeSpan value)
-    {
-        throw new NotImplementedException();
-    }
 }
