@@ -10,6 +10,7 @@ namespace ReseauDeBus.Backend.Simulation
         public DateTime debut {get; private set;}
         public TimeSpan dureeChrono {get; private set;}
         public TimeSpan tempsRestant {get; private set;}
+        public TimeSpan tempsEcoule {get; private set;}
         public bool isActif { get; private set; }
 
         private readonly HashSet<IObserver<NotificationSimulation>> _observateurs = new();
@@ -20,6 +21,7 @@ namespace ReseauDeBus.Backend.Simulation
             frequence = delaiMs;
             dureeChrono = duree;
             tempsRestant = duree;
+            tempsEcoule = new TimeSpan(0);
             debut = DateTime.Now;
 
             chrono = new Timer(frequence);
@@ -43,13 +45,18 @@ namespace ReseauDeBus.Backend.Simulation
                 chrono.Dispose();
                 chrono = null;
                 isActif = false;
+                foreach (var obs in _observateurs)
+                {
+                    NotificationSimulation notif = new NotificationSimulation{ Type = NotificationSimulationType.TimerEnd };
+                    obs.OnNext(notif); // Notify timer end
+                }
             }
         }
 
         private void Tick(object? sender, ElapsedEventArgs e)
         {
             tempsRestant = dureeChrono - (e.SignalTime - debut);
-
+            tempsEcoule = dureeChrono - tempsRestant;
             foreach (var obs in _observateurs)
             {
                 NotificationSimulation notif = new NotificationSimulation{ Type = NotificationSimulationType.TimerTick };
@@ -59,14 +66,14 @@ namespace ReseauDeBus.Backend.Simulation
             if (chrono != null && tempsRestant <= TimeSpan.Zero)
             {
                 Stop();
-                foreach (var obs in _observateurs)
-                {
-                    NotificationSimulation notif = new NotificationSimulation{ Type = NotificationSimulationType.TimerTick };
-                    obs.OnNext(notif); // Notify timer end
-                }
             }
         }
 
+        public DateTime GetTempsCourant()
+        {
+            return this.debut.Add(this.tempsEcoule);
+        }
+        
         public IDisposable Subscribe(IObserver<NotificationSimulation> observateur)
         {
             // Si l'obervateur n'est pas encore dans la liste, on l'ajoute
