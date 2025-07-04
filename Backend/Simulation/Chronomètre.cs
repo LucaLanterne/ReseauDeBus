@@ -3,16 +3,17 @@ using Timer = System.Timers.Timer;
 
 namespace ReseauDeBus.Backend.Simulation
 {
-    public class Chronometre : IObservable<DateTime>
+    public class Chronometre : IObservable<NotificationSimulation>
     {
         public Timer? chrono {get; private set;}
         public int frequence {get; private set;}
         public DateTime debut {get; private set;}
         public TimeSpan dureeChrono {get; private set;}
         public TimeSpan tempsRestant {get; private set;}
-        public bool IsActif { get; private set; } = false;
+        public bool isActif { get; private set; }
 
-        private readonly HashSet<IObserver<DateTime>> observateurs = new();
+        private readonly HashSet<IObserver<NotificationSimulation>> _observateurs = new();
+        private readonly HashSet<NotificationSimulation> _notifications = new();
 
         public void Start(TimeSpan duree, int delaiMs = 1000)
         {
@@ -24,11 +25,12 @@ namespace ReseauDeBus.Backend.Simulation
             chrono = new Timer(frequence);
             chrono.Elapsed += Tick;
             chrono.Enabled = true;
-            IsActif = true;
+            isActif = true;
 
-            foreach (var obs in observateurs)
+            foreach (var obs in _observateurs)
             {
-                obs.OnNext(debut); // Notify start time
+                NotificationSimulation notif = new NotificationSimulation{ Type = NotificationSimulationType.TimerStart };
+                obs.OnNext(notif); // Notify start time
             }
         }
 
@@ -36,10 +38,11 @@ namespace ReseauDeBus.Backend.Simulation
         {
             if (chrono != null)
             {
+                chrono.Enabled = false;
                 chrono.Stop();
                 chrono.Dispose();
                 chrono = null;
-                IsActif = false;
+                isActif = false;
             }
         }
 
@@ -47,42 +50,35 @@ namespace ReseauDeBus.Backend.Simulation
         {
             tempsRestant = dureeChrono - (e.SignalTime - debut);
 
-            foreach (var obs in observateurs)
+            foreach (var obs in _observateurs)
             {
-                obs.OnNext(e.SignalTime); // Notify real current time
+                NotificationSimulation notif = new NotificationSimulation{ Type = NotificationSimulationType.TimerTick };
+                obs.OnNext(notif); // Notify real current time
             }
 
-            if (tempsRestant <= TimeSpan.Zero)
+            if (chrono != null && tempsRestant <= TimeSpan.Zero)
             {
                 Stop();
-                foreach (var obs in observateurs)
+                foreach (var obs in _observateurs)
                 {
-                    obs.OnCompleted();
+                    NotificationSimulation notif = new NotificationSimulation{ Type = NotificationSimulationType.TimerTick };
+                    obs.OnNext(notif); // Notify timer end
                 }
             }
         }
 
-        public IDisposable Subscribe(IObserver<DateTime> observer)
+        public IDisposable Subscribe(IObserver<NotificationSimulation> observateur)
         {
-            observateurs.Add(observer);
-            return new Unsubscriber<DateTime>(observateurs, observer);
-        }
-
-        private class Unsubscriber<T> : IDisposable
-        {
-            private readonly ISet<IObserver<T>> _observers;
-            private readonly IObserver<T> _observer;
-
-            public Unsubscriber(ISet<IObserver<T>> observers, IObserver<T> observer)
+            // Si l'obervateur n'est pas encore dans la liste, on l'ajoute
+            if (_observateurs.Add(observateur))
             {
-                _observers = observers;
-                _observer = observer;
+                // On lui envoie les notifications
+                foreach (var notif in _notifications)
+                {
+                    observateur.OnNext(notif);
+                }
             }
-
-            public void Dispose()
-            {
-                _observers.Remove(_observer);
-            }
+            return new Unsubscriber<NotificationSimulation>(_observateurs, observateur);
         }
     }
 }

@@ -22,7 +22,7 @@ public class InfoTrafic
         ligne_infoTrafic = ligneInfoTrafic;
         horaireDepart_infoTrafic = new DateTime(horaireDepartInfoTrafic.Year, horaireDepartInfoTrafic.Month, horaireDepartInfoTrafic.Day, horaireDepartInfoTrafic.Hour, horaireDepartInfoTrafic.Minute, horaireDepartInfoTrafic.Second);
         simulation_infoTrafic = simulationInfoTrafic;
-        etatBus_infoTrafic = new EnArret();
+        etatBus_infoTrafic = new EnArret(this);
     }
 
     public void Tick()

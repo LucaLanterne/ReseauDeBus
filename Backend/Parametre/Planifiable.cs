@@ -60,4 +60,19 @@ public abstract class Planifiable
         }
         return temps;
     }
+    
+    public TimeSpan GetDuree(int heureDate)
+    {
+        TimeSpan temps = TimeSpan.Zero;
+        foreach (Creneau c in horaires)
+        {
+            var heureDeb = c.plage_creneau.Item1;
+            var heureFin = c.plage_creneau.Item1;
+            if (heureDeb <= heureDate && heureFin >= heureDate)
+            {
+                temps = c.GetDuree();
+            }
+        }
+        return temps;
+    }
 }
